@@ -1,0 +1,81 @@
+<included>
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径 -->
+    <property name="MONITOR_LOGS_HOME" value="${basedir}${file.separator}monitor_logs"/>
+    <property name="SERVER_LOGS_HOME" value="${basedir}${file.separator}server_logs"/>
+
+    <!--业务日志-->
+    <logger name="businessLogger" additivity="false">
+        <level value="ERROR"/>
+        <appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <Encoding>UTF-8</Encoding>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${MONITOR_LOGS_HOME}${file.separator}business${file.separator}no_send.%d{yyyy-MM-dd-HH-mm}</FileNamePattern>
+            </rollingPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%msg%n</pattern>
+            </layout>
+        </appender>
+    </logger>
+
+
+    <logger name="errLogger" additivity="false">
+        <level value="INFO"/>
+        <!-- 按照每天生成日志文件 -->
+        <appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <Encoding>UTF-8</Encoding>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${MONITOR_LOGS_HOME}${file.separator}log.%d{yyyy-MM-dd}</FileNamePattern>
+                <MaxHistory>15</MaxHistory>
+            </rollingPolicy>
+            <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+                <maxFileSize>90MB</maxFileSize>
+            </triggeringPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} -
+                    %msg%n
+                </pattern>
+            </layout>
+        </appender>
+    </logger>
+
+    <logger name="braveLogger" additivity="false">
+        <level value="ERROR"/>
+        <!--日志调用链-->
+        <appender class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <Encoding>UTF-8</Encoding>
+            <level>INFO</level>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <FileNamePattern>${MONITOR_LOGS_HOME}${file.separator}chain${file.separator}no_send.%d{yyyy-MM-dd-HH-mm}</FileNamePattern>
+            </rollingPolicy>
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%msg%n</pattern>
+            </layout>
+        </appender>
+    </logger>
+
+
+
+    <logger name="druid.sql.Statement" level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <!--log配置-->
+        <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${file.separator}${file.separator}server.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${file.separator}${file.separator}server.%d.%i.log</fileNamePattern>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <!-- or whenever the file size reaches 100MB -->
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+                <MaxHistory>15</MaxHistory>
+            </rollingPolicy>
+
+            <encoder>
+                <pattern>%d %p [%thread] %c - &lt;%m&gt;%n</pattern>
+            </encoder>
+        </appender>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="ROLLING_FILE"/>
+    </root>
+</included>
